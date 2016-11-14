@@ -1,0 +1,33 @@
+{
+  "name": "autoria-api",
+  "version": "1.0.0",
+  "main": "./app/main.jsx",
+  "repository": {
+    "url": "https://github.com/seedofjoy/autoria-api.git",
+    "type": "git"
+  },
+  "author": "Igor Mozharovsky <igor.mozharovsky@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb": "latest",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-import": "^2.1.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.6.0",
+    "webpack": "^1.13.3"
+  },
+  "scripts": {
+    "watch": "webpack --progress -w",
+    "eslint-fix": "eslint ./app --fix; exit 0",
+    "eslint-update": "npm info 'eslint-config-airbnb@latest' peerDependencies --json | command sed 's/[\\{\\},]//g ; s/: /@/g' | xargs yarn add --dev 'eslint-config-airbnb@latest'"
+  },
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  }
+}
