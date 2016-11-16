@@ -9,10 +9,12 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
+  devtool: 'source-map',
   module: {
     loaders: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: "eslint-loader", enforce: "pre" }
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: "eslint-loader", enforce: "pre" },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
     ]
   }
 };
