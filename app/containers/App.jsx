@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 
 import { SELECT_TYPE } from '../api/config';
 import {
-  selectSingleValue,
+  fetchDependsValues,
   selectMultiValue,
+  selectSingleValue,
  } from '../api/actions';
 import ApiParamItem, { SelectedValueProp } from '../components/ApiParamItem';
 import AverageStats from '../components/AverageStats';
@@ -33,7 +34,7 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { dispatch } = nextProps;
-    // dispatch(fetchDependsValues());
+    dispatch(fetchDependsValues());
     // dispatch(fetchAverageIfSelected());
   }
 

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Select from 'react-select';
+import { SELECT_TYPE } from '../api/config';
 
 // const DEFAULT_DISABLED_VALUE = 'DEFAULT_DISABLED_VALUE';
 
@@ -15,7 +16,7 @@ const OptionShape = PropTypes.shape({
 
 export function SelectedValueProp(props, propName, componentName, ...rest) {
   let checker = ValueProp;
-  if (props.multi) {
+  if (props.multi || props.selectType === SELECT_TYPE.MULTI) {
     checker = PropTypes.arrayOf(checker);
   }
   return checker(props, propName, componentName, ...rest);

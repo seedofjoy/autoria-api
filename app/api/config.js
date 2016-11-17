@@ -80,7 +80,7 @@ export const API_PARAMETERS = [
     fetchType: FETCH_TYPE.API_CALL_DEPENDENT,
     selectType: SELECT_TYPE.SINGLE,
     payload: {
-      fetchUrl: 'http://api.auto.ria.com/colors',
+      fetchUrl: 'http://api.auto.ria.com/categories/:main_category/bodystyles',
       dependsOn: ['main_category'],
     },
   },
