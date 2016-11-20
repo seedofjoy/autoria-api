@@ -2222,6 +2222,10 @@ loader-utils@^0.2.11, loader-utils@^0.2.7, loader-utils@~0.2.2:
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
+lodash:
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
+
 lodash-es@^4.2.1:
   version "4.17.0"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.0.tgz#b94e3ba146a914b6513e9c302cc59cc6be6c7e79"

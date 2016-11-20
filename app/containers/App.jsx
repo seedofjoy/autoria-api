@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { SELECT_TYPE } from '../api/config';
+import { fetchDependsAPIValues } from '../api/action_creators';
 import {
-  fetchDependsValues,
   selectMultiValue,
   selectSingleValue,
  } from '../api/actions';
@@ -14,7 +14,7 @@ import AverageStats from '../components/AverageStats';
 const apiItemShape = PropTypes.shape({
   caption: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  values: PropTypes.array.isRequired,
+  valueItems: PropTypes.array.isRequired,
   selectedValue: SelectedValueProp,
   selectType: PropTypes.string.isRequired,
 });
@@ -34,13 +34,13 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { dispatch } = nextProps;
-    dispatch(fetchDependsValues());
+    dispatch(fetchDependsAPIValues());
     // dispatch(fetchAverageIfSelected());
   }
 
-  getApiParamComponent({ name, caption, values, selectType, selectedValue }) {
+  getApiParamComponent({ name, caption, valueItems, selectType, selectedValue }) {
     const options =
-      values.map(v => ({ value: v.value, label: v.name }));
+      valueItems.map(v => ({ value: v.value, label: v.name }));
 
     const selectTypesConf = {
       [SELECT_TYPE.SINGLE]: {
@@ -72,7 +72,8 @@ class App extends Component {
     );
   }
 
-  handleParamSelect(name, { value }) {
+  handleParamSelect(name, item) {
+    const value = item ? item.value : undefined;
     this.props.dispatch(selectSingleValue(name, value));
   }
 
@@ -105,13 +106,14 @@ function mapStateToProps(state) {
   const { api } = state;
 
   const apiItems = api.params.map(({ caption, name, selectType }) => {
-    const values = api.values[name] || [];
+    const values = api.values[name] || {};
+    const valueItems = values.items || [];
     const selectedValue = api.select[name];
     return {
       caption,
       name,
       selectType,
-      values,
+      valueItems,
       selectedValue,
     };
   });

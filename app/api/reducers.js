@@ -20,7 +20,13 @@ function params(state = [], action) {
 function values(state = {}, action) {
   switch (action.type) {
     case ADD_PARAM_VALUES:
-      return { ...state, [action.name]: action.values };
+      return {
+        ...state,
+        [action.name]: {
+          items: action.values,
+          payload: action.payload,
+        },
+      };
     default:
       return state;
   }

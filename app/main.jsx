@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './containers/App';
 import configureStore from './store/configureStore';
-import { initApp } from './api/actions';
+import { initApp } from './api/action_creators';
 
 const store = configureStore();
 store.dispatch(initApp());
