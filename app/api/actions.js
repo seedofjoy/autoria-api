@@ -4,6 +4,8 @@ export const ADD_API_ITEMS_BATCH = 'ADD_API_ITEMS_BATCH';
 export const SELECT_SINGLE = 'SELECT_SINGLE';
 export const SELECT_MULTI = 'SELECT_MULTI';
 
+export const ADD_AVERAGE = 'ADD_AVERAGE';
+
 
 export function selectSingleValue(name, selectedValue) {
   return (dispatch, getState) => {
@@ -34,4 +36,9 @@ export function addAPIValues(name, values, payload) {
 
 export function addApiItemsBatch(apiItems) {
   return { type: ADD_API_ITEMS_BATCH, items: apiItems };
+}
+
+
+export function addAverage(stats, selectedFor) {
+  return { type: ADD_AVERAGE, stats, selectedFor };
 }

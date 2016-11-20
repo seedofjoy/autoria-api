@@ -1,9 +1,11 @@
+import _ from 'lodash';
 import { combineReducers } from 'redux';
 import {
     ADD_API_ITEMS_BATCH,
     ADD_PARAM_VALUES,
     SELECT_MULTI,
     SELECT_SINGLE,
+    ADD_AVERAGE,
 } from './actions';
 
 
@@ -35,9 +37,27 @@ function values(state = {}, action) {
 function select(state = {}, action) {
   switch (action.type) {
     case SELECT_SINGLE:
+      if (_.isNil(action.value)) {
+        return _.omit(state, action.name);
+      }
       return { ...state, [action.name]: action.value };
     case SELECT_MULTI:
+      if (_.isEmpty(action.values)) {
+        return _.omit(state, action.name);
+      }
       return { ...state, [action.name]: action.values };
+    default:
+      return state;
+  }
+}
+
+function average(state = { stats: null, selectedFor: {} }, action) {
+  switch (action.type) {
+    case ADD_AVERAGE:
+      return {
+        stats: action.stats,
+        selectedFor: action.selectedFor,
+      };
     default:
       return state;
   }
@@ -49,5 +69,6 @@ export default function createApiReducer() {
     params,
     values,
     select,
+    average,
   });
 }

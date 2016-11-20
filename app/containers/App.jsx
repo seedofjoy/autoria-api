@@ -2,13 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { SELECT_TYPE } from '../api/config';
-import { fetchDependsAPIValues } from '../api/action_creators';
+import { fetchDependsAPIValues, fetchAverageIfSelected } from '../api/action_creators';
 import {
   selectMultiValue,
   selectSingleValue,
  } from '../api/actions';
 import ApiParamItem, { SelectedValueProp } from '../components/ApiParamItem';
-import AverageStats from '../components/AverageStats';
+import AverageStats, { statsShape } from '../components/AverageStats';
 
 
 const apiItemShape = PropTypes.shape({
@@ -25,6 +25,7 @@ class App extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     apiItems: PropTypes.arrayOf(apiItemShape),
+    averageStats: statsShape,
   }
 
   constructor() {
@@ -35,7 +36,7 @@ class App extends Component {
   componentWillReceiveProps(nextProps) {
     const { dispatch } = nextProps;
     dispatch(fetchDependsAPIValues());
-    // dispatch(fetchAverageIfSelected());
+    dispatch(fetchAverageIfSelected());
   }
 
   getApiParamComponent({ name, caption, valueItems, selectType, selectedValue }) {
@@ -120,6 +121,7 @@ function mapStateToProps(state) {
 
   return {
     apiItems,
+    averageStats: api.average.stats,
   };
 }
 

@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { API_PARAMETERS, FETCH_TYPE } from './config';
-import { addApiItemsBatch, addAPIValues } from './actions';
+import { addApiItemsBatch, addAPIValues, addAverage } from './actions';
 import {
   getItemsByFetchType,
   isDependencySatisfied,
@@ -56,6 +57,39 @@ export function fetchDependsAPIValues() {
         .filter(withNotSameDependencies.bind(null, api.select, api.values))
         .map(prepareItemValue.bind(null, dispatch, state));
     return Promise.all(preloadPromises);
+  };
+}
+
+
+export function fetchAverage() {
+  return (dispatch, getState) => {
+    const { api } = getState();
+    const url = new URL('http://api.auto.ria.com/average');
+    const params = api.select;
+
+    Object.keys(params).forEach((key) => {
+      const value = params[key];
+      if (Array.isArray(value)) {
+        value.forEach(v => url.searchParams.append(key, v));
+      } else {
+        url.searchParams.append(key, value);
+      }
+    });
+    return fetch(url)
+      .then(response => response.json())
+      .then(stats => dispatch(addAverage(stats, params)));
+  };
+}
+
+
+export function fetchAverageIfSelected() {
+  return (dispatch, getState) => {
+    const { api } = getState();
+    if (_.isEqual(api.average.selectedFor, api.select)) {
+      return;
+    }
+
+    dispatch(fetchAverage());
   };
 }
 
