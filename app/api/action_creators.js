@@ -1,6 +1,12 @@
 import _ from 'lodash';
-import { API_PARAMETERS, FETCH_TYPE } from './config';
-import { addApiItemsBatch, addAPIValues, addAverage } from './actions';
+import { API_PARAMETERS, FETCH_TYPE, SELECT_TYPE } from './config';
+import {
+  addApiItemsBatch,
+  addAPIValues,
+  addAverage,
+  selectMultiValue,
+  selectSingleValue,
+} from './actions';
 import {
   getItemsByFetchType,
   isDependencySatisfied,
@@ -33,6 +39,24 @@ function prepareItemValue(dispatch, state, apiItem) {
 }
 
 
+export function selectDefaults(fetchType) {
+  return (dispatch, getState) => {
+    const { api } = getState();
+
+    getItemsByFetchType(api.params, fetchType)
+      .filter(item => !_.isNil(item.payload.default))
+      .forEach(({ name, payload }) => {
+        const defaults = payload.default;
+        const selectFunc = _.isArray(defaults)
+          ? selectMultiValue
+          : selectSingleValue;
+
+        dispatch(selectFunc(name, defaults));
+      });
+  };
+}
+
+
 export function fetchAPIValues() {
   return (dispatch, getState) => {
     const state = getState();
@@ -41,7 +65,24 @@ export function fetchAPIValues() {
     const preloadPromises =
       getItemsByFetchType(api.params, FETCH_TYPE.API_CALL)
         .map(prepareItemValue.bind(null, dispatch, state));
-    return Promise.all(preloadPromises);
+
+    return Promise
+      .all(preloadPromises)
+      .then(() => dispatch(selectDefaults(FETCH_TYPE.API_CALL)));
+  };
+}
+
+
+export function addSimpleAPIValues() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { api } = state;
+    getItemsByFetchType(api.params, FETCH_TYPE.SIMPLE_VALUE)
+      .filter(_.matchesProperty('selectType', SELECT_TYPE.SINGLE))
+      .forEach((apiItem) => {
+        dispatch(addAPIValues(apiItem.name, apiItem.payload.values));
+      });
+    dispatch(selectDefaults(FETCH_TYPE.SIMPLE_VALUE));
   };
 }
 
@@ -65,19 +106,21 @@ export function fetchAverage() {
   return (dispatch, getState) => {
     const { api } = getState();
     const url = new URL('http://api.auto.ria.com/average');
-    const params = api.select;
+    const selectParams = api.select;
 
-    Object.keys(params).forEach((key) => {
-      const value = params[key];
+    Object.keys(selectParams).forEach((key) => {
+      const value = selectParams[key];
       if (Array.isArray(value)) {
-        value.forEach(v => url.searchParams.append(key, v));
+        value
+          .filter(_.negate(_.isNil))
+          .forEach(v => url.searchParams.append(key, v));
       } else {
         url.searchParams.append(key, value);
       }
     });
     return fetch(url)
       .then(response => response.json())
-      .then(stats => dispatch(addAverage(stats, params)));
+      .then(stats => dispatch(addAverage(stats, selectParams)));
   };
 }
 
@@ -97,6 +140,7 @@ export function fetchAverageIfSelected() {
 export function initApp() {
   return (dispatch) => {
     dispatch(addApiItemsBatch(API_PARAMETERS));
+    dispatch(addSimpleAPIValues());
     dispatch(fetchAPIValues());
   };
 }

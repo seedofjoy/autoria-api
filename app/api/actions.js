@@ -3,6 +3,7 @@ export const ADD_API_ITEMS_BATCH = 'ADD_API_ITEMS_BATCH';
 
 export const SELECT_SINGLE = 'SELECT_SINGLE';
 export const SELECT_MULTI = 'SELECT_MULTI';
+export const SELECT_RANGE = 'SELECT_RANGE';
 
 export const ADD_AVERAGE = 'ADD_AVERAGE';
 
@@ -26,6 +27,10 @@ export function selectMultiValue(name, selectedValues) {
     }
     return dispatch({ type: SELECT_MULTI, values: selectedValues, name });
   };
+}
+
+export function selectRangeValue(name, { from, to }) {
+  return { type: SELECT_RANGE, name, from, to };
 }
 
 

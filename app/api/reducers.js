@@ -5,6 +5,7 @@ import {
     ADD_PARAM_VALUES,
     SELECT_MULTI,
     SELECT_SINGLE,
+    SELECT_RANGE,
     ADD_AVERAGE,
 } from './actions';
 
@@ -46,6 +47,8 @@ function select(state = {}, action) {
         return _.omit(state, action.name);
       }
       return { ...state, [action.name]: action.values };
+    case SELECT_RANGE:
+      return { ...state, [action.name]: [action.from, action.to] };
     default:
       return state;
   }
