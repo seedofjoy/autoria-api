@@ -4,6 +4,8 @@
     "react",
   ],
   "plugins": [
+    "transform-runtime",
+    "transform-regenerator",
     "transform-object-rest-spread",
     "transform-class-properties",
   ],
