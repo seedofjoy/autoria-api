@@ -1,30 +1,23 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import createLogger from 'redux-logger';
-import createSagaMiddleware from 'redux-saga';
-import thunkMiddleware from 'redux-thunk';
-import createApiReducer from '../api/reducers';
+import createSagaMiddleware, { END } from 'redux-saga';
+import rootReducer from '../reducers';
 
 
-const loggerMiddleware = createLogger();
-
-
-export default function configureStore(preloadedState) {
+export default function configureStore(initialState) {
   const sagaMiddleware = createSagaMiddleware();
-  const api = createApiReducer();
-  const rootReducer = combineReducers({
-    api,
-  });
+  const loggerMiddleware = createLogger();
 
-  return {
-    ...createStore(
-      rootReducer,
-      preloadedState,
-      applyMiddleware(
-        thunkMiddleware,
-        sagaMiddleware,
-        loggerMiddleware,
-      ),
+  const store = createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware(
+      sagaMiddleware,
+      loggerMiddleware,
     ),
-    runSaga: sagaMiddleware.run,
-  };
+  );
+  store.runSaga = sagaMiddleware.run;
+  store.close = () => store.dispatch(END);
+
+  return store;
 }

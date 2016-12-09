@@ -4,10 +4,10 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './containers/App';
 import configureStore from './store/configureStore';
-import { initApp } from './api/action_creators';
+import { rootSaga } from './sagas';
 
 const store = configureStore();
-store.dispatch(initApp());
+store.runSaga(rootSaga);
 
 render(
   <Provider store={store}>

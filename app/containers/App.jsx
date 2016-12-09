@@ -2,13 +2,14 @@ import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+// import * as actions from '../actions';
+import { loadAPI } from '../actions';
 import { SELECT_TYPE } from '../api/config';
-import { fetchDependsAPIValues, fetchAverageIfSelected } from '../api/action_creators';
-import {
-  selectMultiValue,
-  selectSingleValue,
-  selectRangeValue,
- } from '../api/actions';
+// import {
+//   selectMultiValue,
+//   selectSingleValue,
+//   selectRangeValue,
+//  } from '../api/actions';
 import ApiParamItem, { SelectedValueProp } from '../components/ApiParamItem';
 import AverageStats, { statsShape } from '../components/AverageStats';
 import ApiRange from '../components/ApiRange';
@@ -26,9 +27,9 @@ const apiItemShape = PropTypes.shape({
 class App extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    apiItems: PropTypes.arrayOf(apiItemShape),
-    averageStats: statsShape,
+    // dispatch: PropTypes.func.isRequired,
+    // apiItems: PropTypes.arrayOf(apiItemShape),
+    // averageStats: statsShape,
   }
 
   constructor() {
@@ -36,9 +37,12 @@ class App extends Component {
     this.getApiParamComponent = this.getApiParamComponent.bind(this);
   }
 
+  componentWillMount() {
+    this.props.loadAPI();
+  }
+
   componentWillReceiveProps(nextProps) {
     const { dispatch } = nextProps;
-    dispatch(fetchDependsAPIValues());
     dispatch(fetchAverageIfSelected());
   }
 
@@ -112,20 +116,21 @@ class App extends Component {
 
   handleParamSelect(name, item) {
     const value = item ? item.value : undefined;
-    this.props.dispatch(selectSingleValue(name, value));
+    // this.props.dispatch(selectSingleValue(name, value));
   }
 
   handleParamMultiSelect(name, selectedOptions) {
     const values = selectedOptions.map(({ value }) => value);
-    this.props.dispatch(selectMultiValue(name, values));
+    // this.props.dispatch(selectMultiValue(name, values));
   }
 
   handleRangeSelect(name, [from, to]) {
-    this.props.dispatch(selectRangeValue(name, { from, to }));
+    // this.props.dispatch(selectRangeValue(name, { from, to }));
   }
 
   render() {
-    const { apiItems } = this.props;
+    const apiItems = [];
+    // const { apiItems } = this.props;
 
     return (
       <div>
@@ -145,27 +150,27 @@ class App extends Component {
 
 
 function mapStateToProps(state) {
-  const { api } = state;
+  // const { api } = state;
 
-  const apiItems = api.params.map(({ caption, name, selectType, payload }) => {
-    const values = api.values[name] || {};
-    const valueItems = values.items || [];
-    const selectedValue = api.select[name];
-    return {
-      caption,
-      name,
-      selectType,
-      valueItems,
-      selectedValue,
-      payload,
-    };
-  });
+  // const apiItems = api.params.map(({ caption, name, selectType, payload }) => {
+  //   const values = api.values[name] || {};
+  //   const valueItems = values.items || [];
+  //   const selectedValue = api.select[name];
+  //   return {
+  //     caption,
+  //     name,
+  //     selectType,
+  //     valueItems,
+  //     selectedValue,
+  //     payload,
+  //   };
+  // });
 
   return {
-    apiItems,
-    averageStats: api.average.stats,
+    // apiItems,
+    // averageStats: api.average.stats,
   };
 }
 
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, { loadAPI })(App);
